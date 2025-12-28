@@ -29,7 +29,7 @@ export const SERVICES: Service[] = [
     description: 'Logistics hubs and manufacturing facilities optimized for operational efficiency and structural durability.',
     icon: (
       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.673.337a4 4 0 01-2.586.344l-2.387-.477a2 2 0 00-1.022.547l-2.387 2.387a2 2 0 000 2.828l.673.673a2 2 0 002.828 0l2.387-2.387a2 2 0 011.022-.547l2.387-.477a6 6 0 013.86.517l.673.337a4 4 0 002.586.344l2.387-.477a2 2 0 011.022.547l2.387 2.387a2 2 0 010 2.828l-.673.673a2 2 0 01-2.828 0l-2.387-2.387z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.673.337a4 4 0 01-2.586.344l-2.387-.477a2 2 0 00-1.022.547l-2.387 2.387a2 2 0 000 2.828l.673.673a2 2 0 002.828 0l2.387-2.387a2 2 0 011.022-.547l2.387-.477a6 6 0 013.86.517l.673.337a4 4 0 01-2.586.344l2.387-.477a2 2 0 011.022.547l2.387 2.387a2 2 0 010 2.828l-.673.673a2 2 0 01-2.828 0l-2.387-2.387z" />
       </svg>
     )
   },
@@ -76,11 +76,11 @@ export const PROJECTS: Project[] = [
     id: '3',
     title: 'Zenith Corporate Hub',
     category: 'Infrastructure',
-    imageUrl: 'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?q=80&w=1600&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1497215842964-222b430dc094?q=80&w=1600&auto=format&fit=crop',
     gallery: [
-      'https://images.unsplash.com/photo-1577495508048-b635879837f1?q=80&w=1200',
       'https://images.unsplash.com/photo-1431540015161-0bf868a2d407?q=80&w=1200',
-      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1200'
+      'https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1200',
+      'https://images.unsplash.com/photo-1517502884422-41eaead166d4?q=80&w=1200'
     ],
     year: '2024'
   },
@@ -102,8 +102,8 @@ export const PROJECTS: Project[] = [
     category: 'Renovation',
     imageUrl: 'https://images.unsplash.com/photo-1460317442991-0ec209397118?q=80&w=1600&auto=format&fit=crop',
     gallery: [
-      'https://images.unsplash.com/photo-1513584684374-8bdb74838a0f?q=80&w=1200',
       'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1200',
+      'https://images.unsplash.com/photo-1460317442991-0ec209397118?q=80&w=1200',
       'https://images.unsplash.com/photo-1513584684374-8bdb74838a0f?q=80&w=1200'
     ],
     year: '2021'

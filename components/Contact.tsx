@@ -154,11 +154,11 @@ const Contact: React.FC<ContactProps> = ({ onNavigate }) => {
                   {isSubmitting ? (
                     <div className="flex items-center space-x-3">
                       <div className="w-2 h-2 bg-amber-500 rounded-full animate-ping"></div>
-                      <span className="animate-pulse">Encrypting & Transmitting...</span>
+                      <span className="animate-pulse">Submitting...</span>
                     </div>
                   ) : (
                     <>
-                      <span>Submit to amrostudio1@gmail.com</span>
+                      <span>Submit</span>
                       <svg className="w-4 h-4 ml-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                     </>
                   )}

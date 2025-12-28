@@ -210,10 +210,10 @@ const StaticPage: React.FC<StaticPageProps> = ({ type, onBack }) => {
                   className="w-full bg-zinc-950 text-white py-6 font-architectural font-bold uppercase tracking-[0.35em] text-[11px] hover:bg-amber-600 transition-all disabled:bg-zinc-800 flex items-center justify-center group shadow-xl"
                 >
                   {isSubmitting ? (
-                    <span className="animate-pulse">Broadcasting Parameters...</span>
+                    <span className="animate-pulse">Submitting...</span>
                   ) : (
                     <>
-                      <span>Submit to amrostudio1@gmail.com</span>
+                      <span>Submit</span>
                       <svg className="w-4 h-4 ml-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                     </>
                   )}

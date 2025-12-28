@@ -33,6 +33,9 @@ const SHAPES = [
 ];
 
 const PlatformDashboard: React.FC<PlatformDashboardProps> = ({ onBack }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authMode, setAuthMode] = useState<'selection' | 'login'>('selection');
+  const [userType, setUserType] = useState<'guest' | 'professional' | null>(null);
   const [activeTool, setActiveTool] = useState<'calc' | 'workflow' | 'audit'>('calc');
   const [isSyncing, setIsSyncing] = useState(false);
   const [logs, setLogs] = useState<string[]>([
@@ -40,6 +43,10 @@ const PlatformDashboard: React.FC<PlatformDashboardProps> = ({ onBack }) => {
     "[MODE] Local Execution / Zero Latency Relay."
   ]);
   
+  // Login Form State
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
   // Analysis Parameters
   const [params, setParams] = useState({
     span: 12.5,
@@ -81,6 +88,7 @@ const PlatformDashboard: React.FC<PlatformDashboardProps> = ({ onBack }) => {
   ]);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
     const mat = MATERIALS.find(m => m.id === params.material)!;
     const seismic = SEISMIC_ZONES.find(z => z.level === params.seismicZone)!;
     const shape = SHAPES.find(s => s.id === params.shape)!;
@@ -97,7 +105,6 @@ const PlatformDashboard: React.FC<PlatformDashboardProps> = ({ onBack }) => {
     const finalDeflection = (rawDeflection * params.safetyFactor * seismic.multiplier) / 100;
 
     // 2. Wind Pressure Analysis (Simplified Bernoulli Approximation)
-    // p = 0.5 * rho * v^2 * Cd * Kz
     const windPressureKPa = (0.5 * 1.225 * Math.pow(params.windSpeed / 3.6, 2) * 1.2 * (1 + params.height/100)) / 1000;
 
     // 3. Stress Analysis
@@ -119,15 +126,37 @@ const PlatformDashboard: React.FC<PlatformDashboardProps> = ({ onBack }) => {
       weight: Math.round(weightKg),
       isCompliant: finalDeflection < 5.0 && stressMPa < mat.yieldStrength
     });
-  }, [params]);
+  }, [params, isAuthenticated]);
 
   const addLog = (msg: string) => {
     setLogs(prev => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev].slice(0, 5));
   };
 
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoggingIn(true);
+    setTimeout(() => {
+      setUserType('professional');
+      setIsAuthenticated(true);
+      setIsLoggingIn(false);
+      addLog("Professional Session Established: " + credentials.email);
+    }, 1500);
+  };
+
+  const handleGuestAccess = () => {
+    setIsLoggingIn(true);
+    setTimeout(() => {
+      setUserType('guest');
+      setIsAuthenticated(true);
+      setIsLoggingIn(false);
+      addLog("Ephemeral Guest Session Initialized.");
+    }, 1000);
+  };
+
   const exportReport = (title: string) => {
     const content = `STRUCTURA PROFESSIONAL ENGINEERING REPORT
 REPORT ID: ${Math.random().toString(36).substr(2, 9).toUpperCase()}
+USER TYPE: ${userType?.toUpperCase()}
 DATE: ${new Date().toLocaleString()}
 ------------------------------------------
 ANALYSIS PARAMETERS:
@@ -159,14 +188,111 @@ ENGINE: LOCAL STRUCTURA RELAY (OFFLINE)`;
     addLog(`Dossier Exported: ${title}`);
   };
 
+  // Auth View
+  if (!isAuthenticated) {
+    return (
+      <div className="fixed inset-0 z-[100] bg-zinc-950 flex flex-col items-center justify-center p-6 overflow-hidden">
+        <div className="absolute inset-0 bg-grid-wallpaper opacity-10 pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-amber-600/5 rounded-full blur-[120px] pointer-events-none"></div>
+        
+        <div className="w-full max-w-md relative z-10 animate-fade-in-up">
+          <div className="text-center mb-16">
+            <div className="w-16 h-16 bg-white rounded-sm flex items-center justify-center transform rotate-45 mx-auto mb-10 shadow-[0_0_50px_rgba(255,255,255,0.1)]">
+              <div className="w-8 h-8 bg-zinc-950 transform -rotate-45"></div>
+            </div>
+            <h1 className="text-3xl md:text-5xl font-architectural font-bold text-white tracking-tighter uppercase mb-4">
+              MISSION <span className="text-zinc-600">CONTROL</span>
+            </h1>
+            <p className="text-zinc-500 font-architectural text-[9px] uppercase tracking-[0.4em]">Integrated Structural Hub</p>
+          </div>
+
+          {authMode === 'selection' ? (
+            <div className="space-y-6">
+              <button 
+                onClick={() => setAuthMode('login')}
+                className="w-full bg-white text-zinc-950 py-6 font-architectural font-bold uppercase tracking-[0.3em] text-[11px] hover:bg-amber-600 hover:text-white transition-all shadow-xl flex items-center justify-center space-x-4"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                <span>Professional Sign In</span>
+              </button>
+              <button 
+                onClick={handleGuestAccess}
+                disabled={isLoggingIn}
+                className="w-full border border-white/10 text-zinc-400 py-6 font-architectural font-bold uppercase tracking-[0.3em] text-[11px] hover:bg-white/5 transition-all flex items-center justify-center space-x-4"
+              >
+                {isLoggingIn ? (
+                   <div className="w-4 h-4 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    <span>Login as Guest</span>
+                  </>
+                )}
+              </button>
+              <div className="pt-10 flex justify-center">
+                 <button onClick={onBack} className="text-zinc-600 hover:text-zinc-400 text-[9px] font-bold uppercase tracking-widest font-architectural">Return to Terminal</button>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleLogin} className="space-y-8 animate-fade-in-up">
+              <div className="space-y-2">
+                <label className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest block font-architectural">Node ID / Email</label>
+                <input 
+                  required
+                  type="email" 
+                  value={credentials.email}
+                  onChange={(e) => setCredentials({...credentials, email: e.target.value})}
+                  className="w-full bg-zinc-900 border border-zinc-800 py-4 px-6 text-white focus:outline-none focus:border-amber-600 transition-all font-light" 
+                  placeholder="name@structura.com"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest block font-architectural">Secure Key</label>
+                <input 
+                  required
+                  type="password" 
+                  value={credentials.password}
+                  onChange={(e) => setCredentials({...credentials, password: e.target.value})}
+                  className="w-full bg-zinc-900 border border-zinc-800 py-4 px-6 text-white focus:outline-none focus:border-amber-600 transition-all font-light" 
+                  placeholder="••••••••"
+                />
+              </div>
+              <button 
+                type="submit"
+                disabled={isLoggingIn}
+                className="w-full bg-amber-600 text-white py-6 font-architectural font-bold uppercase tracking-[0.3em] text-[11px] hover:bg-amber-700 transition-all shadow-2xl flex items-center justify-center space-x-4"
+              >
+                {isLoggingIn ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <span>Initialize Session</span>
+                )}
+              </button>
+              <button 
+                type="button"
+                onClick={() => setAuthMode('selection')}
+                className="w-full text-zinc-600 hover:text-zinc-400 text-[9px] font-bold uppercase tracking-widest font-architectural"
+              >
+                Back to Selection
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Main Dashboard View
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-300 pt-32 pb-24 font-inter selection:bg-amber-600 selection:text-white">
       <div className="container mx-auto px-6 mb-12">
         <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-10">
           <div>
             <div className="flex items-center space-x-3 mb-4">
-              <span className="bg-amber-600 text-white text-[8px] font-bold uppercase px-2 py-0.5 rounded-sm tracking-widest">Architectural Suite</span>
-              <span className="text-zinc-600 font-mono text-[9px] tracking-widest uppercase">Direct Local Execution</span>
+              <span className={`text-[8px] font-bold uppercase px-2 py-0.5 rounded-sm tracking-widest ${userType === 'professional' ? 'bg-amber-600 text-white' : 'bg-zinc-800 text-zinc-400'}`}>
+                {userType === 'professional' ? 'Architectural Pro' : 'Guest Access'}
+              </span>
+              <span className="text-zinc-600 font-mono text-[9px] tracking-widest uppercase">Relay: Active</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-architectural font-bold text-white tracking-tighter uppercase leading-none">
               MISSION <span className="text-zinc-600">CONTROL</span>
@@ -196,7 +322,6 @@ ENGINE: LOCAL STRUCTURA RELAY (OFFLINE)`;
       <div className="container mx-auto px-6">
         {activeTool === 'calc' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fade-in-up">
-            {/* INPUT PANEL */}
             <div className="lg:col-span-4 space-y-8">
               <div className="bg-zinc-900/40 border border-white/5 p-8">
                 <h3 className="text-white font-architectural font-bold text-[10px] uppercase tracking-widest mb-10 border-b border-white/5 pb-4">Primary Constraints</h3>
@@ -211,7 +336,6 @@ ENGINE: LOCAL STRUCTURA RELAY (OFFLINE)`;
                       {MATERIALS.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
                     </select>
                   </div>
-
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-[9px] text-zinc-600 uppercase tracking-widest block mb-2 font-bold">Height (m)</label>
@@ -222,7 +346,6 @@ ENGINE: LOCAL STRUCTURA RELAY (OFFLINE)`;
                       <input type="number" value={params.windSpeed} onChange={(e) => setParams({...params, windSpeed: parseFloat(e.target.value) || 0})} className="w-full bg-black border border-zinc-800 py-3 px-4 text-white focus:outline-none focus:border-amber-600 font-mono text-sm" />
                     </div>
                   </div>
-
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-[9px] text-zinc-600 uppercase tracking-widest block mb-2 font-bold">Span (m)</label>
@@ -235,7 +358,6 @@ ENGINE: LOCAL STRUCTURA RELAY (OFFLINE)`;
                   </div>
                 </div>
               </div>
-
               <div className="bg-zinc-900/40 border border-white/5 p-8">
                  <h3 className="text-white font-architectural font-bold text-[10px] uppercase tracking-widest mb-10 border-b border-white/5 pb-4">Foundation & Soil</h3>
                  <div className="space-y-6">
@@ -269,7 +391,6 @@ ENGINE: LOCAL STRUCTURA RELAY (OFFLINE)`;
                    </div>
                    <div className={`w-3 h-3 rounded-full ${results.isCompliant ? 'bg-emerald-500' : 'bg-red-500 animate-pulse'} shadow-xl`}></div>
                  </div>
-                 
                  <div className="grid grid-cols-2 gap-10">
                    <div>
                       <span className="text-[8px] text-zinc-600 uppercase font-bold tracking-widest block mb-2">Deflection</span>
@@ -286,7 +407,6 @@ ENGINE: LOCAL STRUCTURA RELAY (OFFLINE)`;
                       </div>
                    </div>
                  </div>
-
                  <div className="mt-12 space-y-6 pt-10 border-t border-white/5">
                     <div className="flex justify-between items-center">
                        <span className="text-[8px] text-zinc-600 uppercase font-bold tracking-[0.2em]">Wind Pressure Magnitude</span>
@@ -304,7 +424,6 @@ ENGINE: LOCAL STRUCTURA RELAY (OFFLINE)`;
                     </div>
                  </div>
               </div>
-
               <div className="bg-black border border-zinc-800 p-10 flex items-center justify-between">
                  <div>
                     <span className="text-[8px] text-zinc-600 uppercase font-bold tracking-widest block mb-2">Structural Self-Weight</span>
@@ -314,7 +433,6 @@ ENGINE: LOCAL STRUCTURA RELAY (OFFLINE)`;
                     <svg className="w-6 h-6 text-zinc-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
                  </div>
               </div>
-
               <div className="font-mono text-[9px] space-y-2 opacity-40 px-6 py-4 bg-zinc-900/50">
                 {logs.map((log, i) => <div key={i} className="flex space-x-3"><span className="text-zinc-700">|</span>{log}</div>)}
               </div>
@@ -433,11 +551,11 @@ ENGINE: LOCAL STRUCTURA RELAY (OFFLINE)`;
         <div className="flex space-x-12">
            <div className="flex items-center space-x-3">
              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
-             <span className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest">Protocol: Local Compute Only</span>
+             <span className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest">Protocol: Secure Execution</span>
            </div>
            <div className="hidden md:flex items-center space-x-3">
              <div className="w-1.5 h-1.5 rounded-full bg-zinc-800"></div>
-             <span className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest">Visual Parity: Verified</span>
+             <span className="text-[10px] font-mono text-zinc-600 uppercase tracking-widest">Active Node: {userType?.toUpperCase()}</span>
            </div>
         </div>
         <button onClick={onBack} className="text-[10px] font-architectural font-bold uppercase tracking-[0.4em] text-amber-500 hover:text-white transition-all px-10 py-3 border border-amber-500/20 hover:bg-amber-500/10">Terminate Session</button>
