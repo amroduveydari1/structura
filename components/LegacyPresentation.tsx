@@ -83,7 +83,7 @@ Our professional suite (STRUCTURA v2.5.0) enables:
 - 12M Sq. Meters Engineered
 - 24 International Offices
 
-Generated for amrostudio1@gmail.com relay.
+Generated for hello@amrostudio.co relay.
 (c) ${timestamp} STRUCTURA GLOBAL HOLDINGS.
 ============================================================
     `;

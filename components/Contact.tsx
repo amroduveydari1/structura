@@ -19,10 +19,10 @@ const Contact: React.FC<ContactProps> = ({ onNavigate }) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Explicitly targeting amrostudio1@gmail.com
-    console.log("TRANSMITTING TO: amrostudio1@gmail.com", {
+    // Explicitly targeting hello@amrostudio.co
+    console.log("TRANSMITTING TO: hello@amrostudio.co", {
       timestamp: new Date().toISOString(),
-      recipient: "amrostudio1@gmail.com",
+      recipient: "hello@amrostudio.co",
       payload: formData
     });
 
@@ -50,7 +50,7 @@ const Contact: React.FC<ContactProps> = ({ onNavigate }) => {
             <div className="space-y-12 relative z-10">
               <div>
                 <h4 className="text-zinc-600 font-architectural uppercase tracking-[0.3em] text-[9px] font-bold mb-5">Communication Nodes</h4>
-                <p className="text-xl font-light text-zinc-300">amrostudio1@gmail.com</p>
+                <p className="text-xl font-light text-zinc-300">hello@amrostudio.co</p>
                 <p className="text-sm text-zinc-500 mt-2 font-mono">SECURE RELAY ACTIVE</p>
               </div>
               
@@ -84,7 +84,7 @@ const Contact: React.FC<ContactProps> = ({ onNavigate }) => {
                 </div>
                 <h3 className="text-2xl font-architectural font-bold text-zinc-900 uppercase tracking-tighter mb-4">Transmission Success</h3>
                 <p className="text-zinc-500 font-light max-w-sm mx-auto leading-relaxed">
-                  The project brief has been encrypted and sent to our senior planning division at <span className="text-zinc-900 font-bold">amrostudio1@gmail.com</span>.
+                  The project brief has been encrypted and sent to our senior planning division at <span className="text-zinc-900 font-bold">hello@amrostudio.co</span>.
                 </p>
                 <button 
                   onClick={() => setIsSubmitted(false)}

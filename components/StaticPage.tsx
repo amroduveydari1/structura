@@ -14,7 +14,7 @@ const StaticPage: React.FC<StaticPageProps> = ({ type, onBack }) => {
     e.preventDefault();
     setIsSubmitting(true);
     // Explicit simulation of transmission to user email
-    console.log("TRANSMITTING ENQUIRY TO: amrostudio1@gmail.com");
+    console.log("TRANSMITTING ENQUIRY TO: hello@amrostudio.co");
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
@@ -63,7 +63,7 @@ const StaticPage: React.FC<StaticPageProps> = ({ type, onBack }) => {
           content: 'Discover the latest breakthroughs in high-tolerance engineering and metropolitan landmark deliveries.',
           sections: [
             { h: 'Media Kit', p: 'Download high-resolution structural renderings and corporate logos.' },
-            { h: 'Public Relations', p: 'For inquiries, reach out to press@structura.com (routed to amrostudio1@gmail.com).' },
+            { h: 'Public Relations', p: 'For inquiries, reach out to hello@amrostudio.co.' },
             { h: 'Recent Features', p: 'Recognized by Architectural Digest for the Obsidian Tower innovation.' }
           ]
         };
@@ -71,7 +71,7 @@ const StaticPage: React.FC<StaticPageProps> = ({ type, onBack }) => {
         return {
           title: 'Start a Project',
           subtitle: 'Project Enquiry',
-          content: 'Ready to build the future? Fill out the form below or contact our global headquarters directly at amrostudio1@gmail.com.',
+          content: 'Ready to build the future? Fill out the form below or contact our global headquarters directly at hello@amrostudio.co.',
           isForm: true
         };
       case 'privacy':
@@ -80,7 +80,7 @@ const StaticPage: React.FC<StaticPageProps> = ({ type, onBack }) => {
           subtitle: 'Data Integrity',
           content: 'At STRUCTURA, we treat architectural data with the same integrity as our buildings. Your blueprints and metadata are encrypted.',
           sections: [
-            { h: 'Data Security', p: 'All transmissions to amrostudio1@gmail.com are secured using AES-256 encryption.' },
+            { h: 'Data Security', p: 'All transmissions to hello@amrostudio.co are secured using AES-256 encryption.' },
             { h: 'BIM Protection', p: 'Metadata is used only for calculation accuracy within the Mission Control hub.' },
             { h: 'Your Rights', p: 'You have full ownership of your architectural models stored on our nodes.' }
           ]
@@ -180,7 +180,7 @@ const StaticPage: React.FC<StaticPageProps> = ({ type, onBack }) => {
                   <svg className="w-12 h-12 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg>
                 </div>
                 <h3 className="text-2xl font-architectural font-bold text-zinc-900 uppercase tracking-tighter mb-5">Blueprint Received</h3>
-                <p className="text-zinc-500 font-light max-w-sm mx-auto leading-relaxed">Your enquiry has been securely transmitted to <span className="font-bold text-zinc-900">amrostudio1@gmail.com</span>. Our senior consultants will reach out within 48 hours.</p>
+                <p className="text-zinc-500 font-light max-w-sm mx-auto leading-relaxed">Your enquiry has been securely transmitted to <span className="font-bold text-zinc-900">hello@amrostudio.co</span>. Our senior consultants will reach out within 48 hours.</p>
                 <button 
                   onClick={() => setIsSubmitted(false)}
                   className="mt-12 text-amber-600 font-architectural font-bold uppercase tracking-[0.3em] text-[10px] hover:text-amber-700 transition-colors"
